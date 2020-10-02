@@ -28,7 +28,7 @@ Nuget Package Manager で Swashbuckle 5.5.0 を追加する。
 
 ### .NET Core CLI の場合
 ```console
-dotnet add TodoApi.csproj package Swashbuckle.AspNetCore -v 5.5.0
+dotnet add ＜プロジェクト名＞.csproj package Swashbuckle.AspNetCore -v 5.5.0
 ```
 
 ## Swaggerミドルウェアを追加・構成する
