@@ -35,7 +35,7 @@ dotnet add TodoApi.csproj package Swashbuckle.AspNetCore -v 5.5.0
 Startup.ConfigureServices メソッドのサービスコレクションに Swagger ジェネレーターを追加する。
 
 Startup.cs:
-```
+```csharp
 public void ConfigureServices(IServiceCollection services)
 {
     // 1 つ以上の SwaggerDocument を定義して、Swagger ジェネレータを登録する
@@ -45,7 +45,7 @@ public void ConfigureServices(IServiceCollection services)
 
 Startup.Configure メソッドで、生成された JSON ドキュメントと SwaggerUI を提供するためのミドルウェアを有効にする。
 Startup.cs:
-```
+```csharp
 public void Configure(IApplicationBuilder app)
 {
     // 生成された Swagger を JSON エンドポイントとして提供するミドルウェアに対して有効にする
@@ -74,10 +74,20 @@ SwaggerUI は http://localhost:<port>/swagger にある。Swagger UI を介し�
 アプリのルート（http://localhost:<port>/）で Swagger UI を提供するには、RoutePrefix プロパティを空の文字列に設定する。
 
 Startup.Configure メソッド:
-```
+```csharp
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     c.RoutePrefix = string.Empty;
 });
+```
+
+## カスタマイズする
+Swagger には、オブジェクトモデルを文書化し、テーマに合わせて UI をカスタマイズするためのオプションが用意されている。Startup クラス、次の名前空間を追加します。
+
+Startup.cs
+```csharp
+using System;
+using System.Reflection;
+using System.IO;
 ```
