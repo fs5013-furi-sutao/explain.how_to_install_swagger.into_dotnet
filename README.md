@@ -175,3 +175,43 @@ public void ConfigureServices(IServiceCollection services)
     });
 }
 ```
+
+上記のコードでは、Reflection を使用して、WebAPI プロジェクトの名前と一致する XML ファイル名を作成している。AppContext.BaseDirectory プロパティは、XML ファイルへのパスを構築するために使用される。一部の Swagger 機能（たとえば、入力パラメーターまたは HTTP メソッドのスキーマとそれぞれの属性からの応答コード）は、XML ドキュメントファイルを使用せずに機能する。ほとんどの機能、つまりメソッドの要約とパラメーターおよび応答コードの説明では、XML ファイルの使用が必須となる。
+
+### SwaggerUI の強化
+アクションにトリプルスラッシュコメントを追加すると、セクションヘッダーに説明が追加され、SwaggerUI が強化される。
+
+アクションにトリプルスラッシュコメントを追加すると、セクションヘッダーに説明が追加され、SwaggerUI が強化される。
+Controller
+```csharp
+/// <summary>
+/// ユーザ認証を行う
+/// </summary>
+/// <remarks>
+/// Sample request:
+///
+///     POST /authenticate
+///     {
+///        "Username": "yamamotor",
+///        "Password": "password",
+///     }
+///
+/// </remarks>
+/// <param name="model"></param>
+/// <returns>ユーザ情報とトークン</returns>
+/// <response code="201">ユーザ情報とトークン</response>
+/// <response code="400">model が null だった場合</response>    
+[AllowAnonymous]
+[HttpPost("authenticate")]
+public IActionResult Authenticate([FromBody] AuthenticateModel model)
+{
+    return Ok(new
+    {
+        Id = user.Id,
+        Username = user.Username,
+        FirstName = user.FirstName,
+        LastName = user.LastName,
+        Token = tokenString
+    });
+}
+```
