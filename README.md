@@ -66,7 +66,7 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
-この UseSwaggerUI メソッド呼び出しにより、静的ファイルミドルウェアが有効になす。
+この UseSwaggerUI メソッド呼び出しにより、静的ファイルミドルウェアが有効になる。
 
 アプリを起動し、`http://localhost:<port>/swagger/v1/swagger.json` に移動する。
 SwaggerUI は http://localhost:<port>/swagger にある。Swagger UI を介して API を探索し、他のプログラムに組み込む。
@@ -90,4 +90,40 @@ Startup.cs
 using System;
 using System.Reflection;
 using System.IO;
+```
+
+### API情報と説明
+AddSwaggerGen メソッドに渡される構成アクションには、作成者、ライセンス、説明などの情報を追加できる。Startup クラスで、クラスを使用するには、OpenApiInfo の名前空間をインポートする。
+
+Startup.cs
+```csharp
+using Microsoft.OpenApi.Models;
+```
+
+OpenApiInfo クラスを使用して、UI に表示される情報を、以下の通り変更する。
+
+Startup.cs
+```csharp
+// 1 つ以上の SwaggerDocument を定義して、Swagger ジェネレータを登録する
+services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "ToDo API",
+        Description = "A simple example ASP.NET Core Web API",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "Shayne Boyer",
+            Email = string.Empty,
+            Url = new Uri("https://twitter.com/spboyer"),
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Use under LICX",
+            Url = new Uri("https://example.com/license"),
+        }
+    });
+});
 ```
