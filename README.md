@@ -129,7 +129,7 @@ services.AddSwaggerGen(c =>
 ```
 
 Swagger UI は、バージョンの情報を表示する。  
-![Swagger UI にバージョンの情報を表示](./swagger_ui_version_info.png.png)
+![Swagger UI にバージョンの情報を表示](./swagger_ui_version_info.png)
 
 ### XMLコメント
 .csproj ファイルに次の記述を追加する。
