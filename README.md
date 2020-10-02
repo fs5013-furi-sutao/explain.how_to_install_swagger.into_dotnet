@@ -128,8 +128,8 @@ services.AddSwaggerGen(c =>
 });
 ```
 
-Swagger UIは、バージョンの情報を表示する。
-!()[./version_info.with_swagger_ui.png]
+Swagger UI は、バージョンの情報を表示する。  
+!(Swagger UI にバージョンの情報を表示)[./swagger_ui_version_info.png.png]
 
 ### XMLコメント
 .csproj ファイルに次の記述を追加する。
@@ -181,7 +181,6 @@ public void ConfigureServices(IServiceCollection services)
 ### SwaggerUI の強化
 アクションにトリプルスラッシュコメントを追加すると、セクションヘッダーに説明が追加され、SwaggerUI が強化される。
 
-アクションにトリプルスラッシュコメントを追加すると、セクションヘッダーに説明が追加され、SwaggerUI が強化される。
 Controller
 ```csharp
 /// <summary>
@@ -215,3 +214,5 @@ public IActionResult Authenticate([FromBody] AuthenticateModel model)
     });
 }
 ```
+
+!(アクションにトリプルスラッシュコメントを追加)[./swagger.ui.png]
