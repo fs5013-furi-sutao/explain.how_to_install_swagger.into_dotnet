@@ -1,4 +1,8 @@
 # ASP.NET Core アプリに Swagger を導入する方法
+
+参照: SwashbuckleとASP.NETCoreの使用を開始する  
+https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=netcore-cli
+
 ## Swagger とは
 Swagger とは、RESTful API の作成を補助するオープンソースのフレームワークのこと。 また、このフレームワークにおいて標準化されているドキュメント仕様そのものを指す言葉でもある。
 
@@ -65,3 +69,15 @@ public void Configure(IApplicationBuilder app)
 この UseSwaggerUI メソッド呼び出しにより、静的ファイルミドルウェアが有効になす。
 
 アプリを起動し、`http://localhost:<port>/swagger/v1/swagger.json` に移動する。
+SwaggerUI は http://localhost:<port>/swagger にある。Swagger UI を介して API を探索し、他のプログラムに組み込む。
+
+アプリのルート（http://localhost:<port>/）で Swagger UI を提供するには、RoutePrefix プロパティを空の文字列に設定する。
+
+Startup.Configure メソッド:
+```
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = string.Empty;
+});
+```
