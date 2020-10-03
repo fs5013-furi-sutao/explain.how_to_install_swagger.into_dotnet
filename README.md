@@ -210,3 +210,79 @@ public IActionResult Authenticate([FromBody] AuthenticateModel model)
 ```
 
 ![アクションにトリプルスラッシュコメントを追加](./swagger.ui.png)
+
+## Authorization ヘッダ設定
+Swagger（ASP.NET Core）で、Authorization ヘッダ（Bearer）を使用するための設定をする。
+
+Startup.ConfigureServices メソッド内での services.AddSwaggerGen() に渡す匿名関数に、以下を追記する。
+
+Startup.cs: ConfigureServices メソッド内、services.AddSwaggerGen(c => {}) に追記:
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddSwaggerGen(c =>
+    {
+        // AllowAnonymous に Authorization ヘッダを付与しないようにフィルタをかける
+        c.OperationFilter<AuthOperationFilter>();
+        
+        // Security 定義で Available authorizations ダイアログを付与する
+        c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+        {
+            Description = "`Token only!!!` - without `Bearer_` prefix",
+            Type = SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Scheme = "bearer"
+        });
+    });
+}
+```
+
+AddSecurityDefinition を追加することで、Authorize ボタンが表示され、ボタンを押すことで開く Available authorizations ダイアログから access token を入力できる。
+
+![Authorize ボタン](./authorize_button.png)
+![Available authorizations ダイアログ](./available_authorizations_dialog.png)
+
+AddSwaggerGen の匿名関数内に記述した AuthOperationFilter クラスは以下のような内容で新規作成する。
+
+AuthOperationFilter.cs:
+```csharp
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+
+namespace WebApi
+{
+    public class AuthOperationFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var isAuthorized = (context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
+                                || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any())
+                                
+                                // AllowAnonymous 属性を持つメソッドを除外
+                                && !context.MethodInfo.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>().Any()
+
+            if (!isAuthorized) return;
+
+            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
+            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
+
+            var jwtbearerScheme = new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearer" }
+            };
+
+            operation.Security = new List<OpenApiSecurityRequirement>
+            {
+                new OpenApiSecurityRequirement { [jwtbearerScheme] = new string []{} }
+            };
+        }
+    }
+}
+```
+これで AllowAnonymous 属性を持つエンドポイントは Authorization ヘッダが除外される。
+
+![AllowAnonymous 属性を持つエンドポイントから Authorization ヘッダを除外](./endpoint_without_lock_mark.png)
